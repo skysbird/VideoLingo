@@ -3,7 +3,6 @@ from loguru import logger
 import numpy as np
 import torch
 import time
-from .utils import save_wav
 import sys
 sys.path.append('CosyVoice/third_party/Matcha-TTS')
 sys.path.append('CosyVoice/')
@@ -11,6 +10,16 @@ from cosyvoice.cli.cosyvoice import CosyVoice
 from cosyvoice.utils.file_utils import load_wav
 import torchaudio
 from modelscope import snapshot_download
+import re
+import string
+import numpy as np
+from scipy.io import wavfile
+
+def save_wav(wav: np.ndarray, output_path: str, sample_rate=24000):
+    # wav_norm = wav * (32767 / max(0.01, np.max(np.abs(wav))))
+    wav_norm = wav * 32767
+    wavfile.write(output_path, sample_rate, wav_norm.astype(np.int16))
+
 model = None
 
 def download_cosyvoice():
