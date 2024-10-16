@@ -64,17 +64,17 @@ def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", 
         load_model(model_name, device)
     
     for retry in range(3):
-        try:
+        # try:
             prompt_speech_16k = load_wav(speaker_wav, 16000)
             output = model.inference_cross_lingual(f'<|{language_map[target_language]}|>{text}', prompt_speech_16k)
             output = next(output)
             torchaudio.save(output_path, output['tts_speech'], 22050)
 
             rprint(f'TTS {text}')
-            break
-        except Exception as e:
-            rprint(f'TTS {text} 失败')
-            rprint(e)
+            # break
+        # except Exception as e:
+        #     rprint(f'TTS {text} 失败')
+        #     rprint(e)
 
 
 if __name__ == '__main__':
