@@ -12,9 +12,12 @@ from core.all_tts_functions.gpt_sovits_tts import gpt_sovits_tts_for_videolingo
 from core.all_tts_functions.openai_tts import openai_tts
 from core.all_tts_functions.fish_tts import fish_tts
 from core.all_tts_functions.azure_tts import azure_tts
+from core.all_tts_functions.cosyvoice_tts import tts
+
 from core.prompts_storage import get_subtitle_trim_prompt
 from core.ask_gpt import ask_gpt
 from core.config_utils import load_key
+from pathlib import Path
 
 console = Console()
 
@@ -30,7 +33,7 @@ def parse_srt_time(time_str):
     seconds, milliseconds = seconds.split(',')
     return int(hours) * 3600 + int(minutes) * 60 + int(seconds) + int(milliseconds) / 1000
 
-def tts_main(text, save_as, number, task_df):
+def tts_main(text, save_as, number, task_df, lang='中文'):
     TTS_METHOD = load_key("tts_method")
     if TTS_METHOD == 'openai_tts':
         openai_tts(text, save_as)
@@ -41,6 +44,10 @@ def tts_main(text, save_as, number, task_df):
         fish_tts(text, save_as)
     elif TTS_METHOD == 'azure_tts':
         azure_tts(text, save_as)
+    elif TTS_METHOD == 'cosyvoice_tts':
+        current_dir = Path.cwd()
+        ref_audio_path = current_dir / f"output/audio/refers/{number}.wav"
+        tts(text, save_as, ref_audio_path, target_language = lang)
 
 def generate_audio(text, target_duration, save_as, number, task_df):
     MIN_SPEED_FACTOR = load_key("speed_factor.min")
