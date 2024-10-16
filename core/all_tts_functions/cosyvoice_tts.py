@@ -1,5 +1,6 @@
 import os
 from loguru import logger
+from rich import print as rprint
 import numpy as np
 import torch
 import time
@@ -35,13 +36,13 @@ def load_model(model_path="models/TTS/CosyVoice-300M", device='auto'):
 
     if device=='auto':
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    logger.info(f'Loading CoxyVoice model from {model_path}')
+    rprint(f'Loading CoxyVoice model from {model_path}')
     t_start = time.time()
     if not os.path.exists(model_path):
         download_cosyvoice()
     model = CosyVoice(model_path)
     t_end = time.time()
-    logger.info(f'CoxyVoice model loaded in {t_end - t_start:.2f}s')
+    rprint(f'CoxyVoice model loaded in {t_end - t_start:.2f}s')
     
 #  <|zh|><|en|><|jp|><|yue|><|ko|> for Chinese/English/Japanese/Cantonese/Korean
 language_map = {
@@ -56,7 +57,7 @@ def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", 
     global model
     
     if os.path.exists(output_path):
-        logger.info(f'TTS {text} 已存在')
+        rprint(f'TTS {text} 已存在')
         return
     
     if model is None:
@@ -69,11 +70,11 @@ def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", 
             output = next(output)
             torchaudio.save(output_path, output['tts_speech'], 22050)
 
-            logger.info(f'TTS {text}')
+            rprint(f'TTS {text}')
             break
         except Exception as e:
-            logger.warning(f'TTS {text} 失败')
-            logger.warning(e)
+            rprint(f'TTS {text} 失败')
+            rprint(e)
 
 
 if __name__ == '__main__':
