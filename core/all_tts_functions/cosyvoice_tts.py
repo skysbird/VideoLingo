@@ -14,6 +14,7 @@ import re
 import string
 import numpy as np
 from scipy.io import wavfile
+from core.config_utils import load_key
 
 def save_wav(wav: np.ndarray, output_path: str, sample_rate=24000):
     # wav_norm = wav * (32767 / max(0.01, np.max(np.abs(wav))))
@@ -53,6 +54,8 @@ language_map = {
 }
 
 def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", device='auto', target_language='中文'):
+    target_language = load_key("lang")
+
     global model
     
     if os.path.exists(output_path):
@@ -70,7 +73,7 @@ def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", 
             max_length = sample_rate * max_duration  # 最大样本数
 
             prompt_speech_16k = prompt_speech_16k[:,:max_length]
-            
+
             output = model.inference_cross_lingual(f'<|{language_map[target_language]}|>{text}', prompt_speech_16k)
             output = next(output)
             torchaudio.save(output_path, output['tts_speech'], 22050)

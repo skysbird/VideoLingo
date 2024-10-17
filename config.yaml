@@ -45,6 +45,9 @@ pause_before_translate: false
 # TTS selection [openai_tts, gpt_sovits, azure_tts, fish_tts]
 tts_method: 'cosyvoice_tts'
 
+cosyvoice_tts:
+  lang: 'en'
+
 # OpenAI TTS-1 API configuration
 openai_tts:
   voice: 'alloy'
