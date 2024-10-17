@@ -75,7 +75,7 @@ def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", 
 
             prompt_speech_16k = prompt_speech_16k[:,:max_length]
 
-            output = model.inference_cross_lingual(f'<|{language_map[target_language]}|>{text}', prompt_speech_16k)
+            output = model.inference_cross_lingual(f'<|{target_language}|>{text}', prompt_speech_16k)
             output = next(output)
             torchaudio.save(output_path, output['tts_speech'], 22050)
 
