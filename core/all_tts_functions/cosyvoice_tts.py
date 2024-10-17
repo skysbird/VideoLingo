@@ -8,6 +8,8 @@ sys.path.append('CosyVoice/third_party/Matcha-TTS')
 sys.path.append('CosyVoice/')
 from cosyvoice.cli.cosyvoice import CosyVoice
 from cosyvoice.utils.file_utils import load_wav
+from cosyvoice.utils.common import set_all_random_seed
+
 import torchaudio
 from modelscope import snapshot_download
 import re
@@ -54,6 +56,7 @@ language_map = {
 }
 
 def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M-25Hz", device='auto', target_language='中文'):
+    set_all_random_seed(1986)
     target_language = load_key("cosyvoice_tts.lang")
     rprint(f"lang===== {target_language} =====")
 
