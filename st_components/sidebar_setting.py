@@ -143,6 +143,10 @@ def page_setting():
             )
             if selected_refer_mode != load_key("gpt_sovits.refer_mode"):
                 update_key("gpt_sovits.refer_mode", selected_refer_mode)
+        elif selected_tts_method == "cosyvoice_tts":
+            lang = st.text_input("lang", value=load_key("cosyvoice_tts.lang"))
+            if lang != load_key("cosyvoice_tts.lang"):
+                update_key("cosyvoice_tts.lang", lang)
 
         original_volume_options = {"mute": 0, "10%": 0.1}
 
