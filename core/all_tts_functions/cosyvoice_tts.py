@@ -1,5 +1,4 @@
 import os
-from loguru import logger
 from rich import print as rprint
 import numpy as np
 import torch
@@ -76,11 +75,3 @@ def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", 
             rprint(f'TTS {text} 失败')
             rprint(e)
 
-
-if __name__ == '__main__':
-    speaker_wav = r'videos/村长台钓加拿大/20240805 英文无字幕 阿里这小子在水城威尼斯发来问候/audio_vocals.wav'
-    os.makedirs('playground', exist_ok=True)
-    while True:
-        text = input('请输入：')
-        tts(text, f'playground/{text}.wav', speaker_wav = speaker_wav, target_langugae = "粤语")
-        
