@@ -55,6 +55,7 @@ language_map = {
 
 def tts(text, output_path, speaker_wav, model_name="models/TTS/CosyVoice-300M", device='auto', target_language='中文'):
     target_language = load_key("lang")
+    rprint(f"lang===== {target_language} =====")
 
     global model
     
