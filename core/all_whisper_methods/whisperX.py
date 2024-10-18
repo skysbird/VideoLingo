@@ -170,7 +170,7 @@ def transcribe(video_file: str):
         #     combined_result['segments'].extend(result['segments'])
 
         transcript = funasr_transcribe_audio(audio_file)
-        
+        print(transcript)
         # 转换 transcript
         combined_result = convert_transcript_to_segments(transcript)
         df = process_transcription(combined_result)
