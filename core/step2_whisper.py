@@ -21,6 +21,8 @@ def transcribe():
     elif WHISPER_METHOD == 'whisperxapi':
         from core.all_whisper_methods.whisperXapi import transcribe as ts
     ts(video_file)
+    # from core.all_whisper_methods.funasr import funasr_transcribe_audio
+
 
 if __name__ == "__main__":
     transcribe()

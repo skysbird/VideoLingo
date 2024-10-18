@@ -7,6 +7,7 @@ from rich import print as rprint
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from core.config_utils import load_key
+from .funasr import funasr_transcribe_audio
 
 MODEL_DIR = load_key("model_dir")
 
@@ -101,6 +102,38 @@ def transcribe_audio(audio_file: str, start: float, end: float) -> Dict:
         rprint(f"[red]WhisperX processing error:[/red] {e}")
         raise
 
+
+# Step 1: 转换 transcript 为适配 process_transcription 的格式
+def convert_transcript_to_segments(transcript):
+    segments = []
+    for sentence in transcript:
+        # 分割每个句子的文本为单词
+        words = sentence['text'].split()
+        
+        # 计算每个单词的时间间隔
+        word_duration = (sentence['end'] - sentence['start']) / len(words)
+        
+        word_list = []
+        for i, word in enumerate(words):
+            start_time = sentence['start'] + i * word_duration
+            end_time = start_time + word_duration
+            word_dict = {
+                'word': word,
+                'start': start_time,
+                'end': end_time
+            }
+            word_list.append(word_dict)
+        
+        segment = {
+            'start': sentence['start'],
+            'end': sentence['end'],
+            'words': word_list
+        }
+        segments.append(segment)
+    
+    return {'segments': segments}
+
+
 def transcribe(video_file: str):
     if not os.path.exists("output/log/cleaned_chunks.xlsx"):
         audio_file = convert_video_to_audio(video_file)
@@ -123,19 +156,23 @@ def transcribe(video_file: str):
             audio_file = os.path.join(output_dir, 'raw_full_audio.wav')
 
         # step2 Extract audio
-        segments = split_audio(audio_file)
+        # segments = split_audio(audio_file)
         
-        # step3 Transcribe audio
-        all_results = []
-        for start, end in segments:
-            result = transcribe_audio(audio_file, start, end)
-            all_results.append(result)
+        # # step3 Transcribe audio
+        # all_results = []
+        # for start, end in segments:
+        #     result = transcribe_audio(audio_file, start, end)
+        #     all_results.append(result)
         
-        # step4 Combine results
-        combined_result = {'segments': []}
-        for result in all_results:
-            combined_result['segments'].extend(result['segments'])
+        # # step4 Combine results
+        # combined_result = {'segments': []}
+        # for result in all_results:
+        #     combined_result['segments'].extend(result['segments'])
+
+        transcript = funasr_transcribe_audio(audio_file)
         
+        # 转换 transcript
+        combined_result = convert_transcript_to_segments(transcript)
         df = process_transcription(combined_result)
         save_results(df)
     else:

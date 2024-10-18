@@ -34,6 +34,9 @@ def convert_video_to_audio(input_file: str) -> str:
 
     return audio_file
 
+
+
+
 def split_audio(audio_file: str, target_duration: int = 20*60, window: int = 60) -> List[Tuple[float, float]]:
     print("🔪 Splitting audio into segments...")
     
